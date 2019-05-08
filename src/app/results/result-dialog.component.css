@@ -1,0 +1,8 @@
+.mat-dialog-title {
+  text-transform: uppercase;
+  color: Green;
+}
+
+.mat-dialog-actions {
+  justify-content: center;
+}

@@ -1,22 +1,35 @@
-<mat-card>
-  <mat-card-title>
-    Choose Your Fighters
-  </mat-card-title>
-  <mat-card-content>
-    <form (ngSubmit)='onSubmit()'>
-      <div>
-        <mat-form-field>
-          <input matNativeControl placeholder="City One" type='text' [(ngModel)]='cityOne' name='city-one'/>
-        </mat-form-field>
-      </div>
-
-      <div>
-        <mat-form-field>
-          <input matNativeControl placeholder="City Two" type='text' [(ngModel)]='cityTwo' name='city-two'/>
-        </mat-form-field>
-      </div>
-
-      <button mat-stroked-button type="submit">Fight</button>
-    </form>
-  </mat-card-content>
-</mat-card>
+<div style="text-align:center">
+  <mat-card>
+    <mat-card-title>
+      Choose Your Fighters
+    </mat-card-title>
+    <mat-card-subtitle>
+      Let's See Which City Has Better Weather
+    </mat-card-subtitle>
+    <mat-card-content>
+      <form [formGroup]='cityForm' (ngSubmit)='searchWeather()'>
+        <div className='city-search'>
+          <mat-form-field>
+            <input matInput placeholder="City One" type='text' formControlName='cityOne' [matAutocomplete]="cityone"/>
+          </mat-form-field>
+          <mat-autocomplete #cityone="matAutocomplete">
+            <mat-option *ngFor="let result of cityOneResults" [value]='result.name'>
+              {{ result.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </div>
+        <div className='city-search'>
+          <mat-form-field>
+            <input matInput placeholder="City Two" type='text' formControlName='cityTwo' [matAutocomplete]="citytwo"/>
+          </mat-form-field>
+          <mat-autocomplete #citytwo="matAutocomplete">
+            <mat-option *ngFor="let result of cityTwoResults" [value]='result.name'>
+              {{ result.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </div>
+        <button type='submit' mat-stroked-button>Fight!</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

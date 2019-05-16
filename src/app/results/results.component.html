@@ -1,0 +1,43 @@
+<div style="text-align:center">
+  <mat-card>
+    <mat-card-title *ngIf='tie'>
+      It's A Tie!
+    </mat-card-title>
+    <mat-card-title *ngIf='!tie'>
+      Looks Like <span class="win">{{winner.name}}</span> Is A Great Place To Visit Right Now
+    </mat-card-title>
+    <mat-card-subtitle *ngIf='!tie' style='color:red'>
+      Probably Avoid <span style="font-weight:bold">{{loser.name}}</span>
+    </mat-card-subtitle>
+    <mat-card-content>
+      <mat-table [dataSource]='[winner, loser]'>
+        <!-- Position Column -->
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef> City </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+        </ng-container>
+  
+        <ng-container matColumnDef="temp">
+          <mat-header-cell *matHeaderCellDef> Tempurature </mat-header-cell>
+          <mat-cell *matCellDef="let element" [ngClass]="{'win': element.score.tempWin, 'lose': !element.score.tempWin}"> {{element.temp}}F </mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="rain">
+          <mat-header-cell *matHeaderCellDef> Chance of Rain </mat-header-cell>
+          <mat-cell *matCellDef="let element" [ngClass]="{'win': element.score.precipWin, 'lose': !element.score.precipWin}"> {{element.precip}} In. </mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="humidity">
+          <mat-header-cell *matHeaderCellDef> Humidity </mat-header-cell>
+          <mat-cell *matCellDef="let element" [ngClass]="{'win': element.score.humidityWin, 'lose': !element.score.humidityWin}"> {{element.humidity / 100 | percent }} </mat-cell>
+        </ng-container>
+      
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-stroked-button routerLink='/'>Try Again</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

@@ -10,19 +10,28 @@ import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatTableModule} from '@angular/material/table';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { ReactiveFormsModule } from '@angular/forms';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {SearchCitiesComponent} from './search-cities/search-cities.component';
-import {ResultDialogComponent} from './results/results-dialog.component';
+import {ResultsComponent} from './results/results.component';
+import { Routes, RouterModule } from '@angular/router';
+
+const appRoutes: Routes = [
+  {path: '', component: SearchCitiesComponent},
+  {path: 'results', component: ResultsComponent, data: {}}
+];
 
 @NgModule({
   declarations: [
     AppComponent,
     SearchCitiesComponent,
-    ResultDialogComponent
+    ResultsComponent
   ],
-  entryComponents: [ResultDialogComponent],
+  entryComponents: [ResultsComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -35,7 +44,10 @@ import {ResultDialogComponent} from './results/results-dialog.component';
     MatInputModule,
     BrowserAnimationsModule,
     MatDialogModule,
-    MatTableModule
+    MatTableModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+    RouterModule.forRoot(appRoutes)
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,12 @@
+.win {
+  color: green;
+  font-weight: bold;
+}
+
+.lose {
+  color: red;
+  font-weight: bold;
+}
+mat-header-cell {
+  font-weight: bold;
+}

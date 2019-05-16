@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import { WeatherService } from 'src/services/weather/weather.service';
-import {MatDialog} from '@angular/material';
-import {ResultDialogComponent} from '../results/results-dialog.component';
+import { Component} from '@angular/core';
+import { ApiResource } from 'src/services/api-resource/api-resource';
+import {WeatherService} from 'src/services/weather/weather-service';
+import { FormControl, FormGroup } from '@angular/forms';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-search-cities',
@@ -9,82 +10,34 @@ import {ResultDialogComponent} from '../results/results-dialog.component';
   styleUrls: ['./search-cities.component.css']
 })
 export class SearchCitiesComponent {
-  constructor(private weatherService: WeatherService, public dialog: MatDialog) {}
-  public cityOne: string;
-  public cityTwo: string;
-  private optimalTempMin = 70;
-  private optimalTemMax = 80;
-  public winner: any;
-  public loser: any;
-  public tie: boolean = false;
-  private score1: number = 0;
-  private score2: number = 0;
+  constructor(private router: Router, private apiResource: ApiResource, private weatherService: WeatherService) {}
+  public cityForm: FormGroup = new FormGroup({
+    cityOne: new FormControl(),
+    cityTwo: new FormControl()
+  });
+  public cityOneResults: any[];
+  public cityTwoResults: any[];
+  public cityObject: any = {};
 
-  public async onSubmit(): Promise<void> {
-    this.weatherService.getWeather(this.cityOne).subscribe(w => {
-      this.weatherService.getWeather(this.cityTwo).subscribe(async (w2) => {
-        await this.determineVictor(w, w2);
-        this.showResults();
-      });
-    });
+  // tslint:disable-next-line:use-life-cycle-interface
+  ngOnInit() {
+    this.cityForm.controls.cityOne.valueChanges
+    .subscribe(result => this.apiResource.get('search.json', result)
+    .subscribe(response => this.cityOneResults = response));
+
+    this.cityForm.controls.cityTwo.valueChanges
+    .subscribe(result => this.apiResource.get('search.json', result)
+    .subscribe(response => this.cityTwoResults = response));
   }
 
-  private showResults(): void {
-    const dialogRef = this.dialog.open(ResultDialogComponent, {
-      width: '500px',
-      data: {
-        winner: this.winner,
-        loser: this.loser,
-        tie: this.tie
-      }
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      window.location.reload();
-    });
-  }
-
-  private async determineVictor(city1, city2) {
-    await this.bestTemp(city1, city2);
-    await this.compareRain(city1, city2);
-    await this.compareHumidity(city1, city2);
-
-    if (this.score1 > this.score2) {
-      this.winner = city1;
-      this.loser = city2;
-    } else if (this.score1 < this.score2) {
-      this.winner = city2;
-      this.loser = city1;
-    } else {
-      this.tie = true;
-    }
-  }
-
-  private compareHumidity(city1, city2) {
-    if (city1.current.humidity < city2.current.humidity) {
-      this.score1++;
-    } else if (city1.current.humidity > city2.current.humidity) {
-      this.score2++;
-    }
-  }
-
-  private compareRain(rainChance1, rainChance2) {
-    if (rainChance1.current.precip_in < rainChance2.current.precip_in) {
-      this.score1++;
-    } else if (rainChance1.current.precip_in > rainChance2.current.precip_in) {
-      this.score2++;
-    }
-  }
-
-  private bestTemp(temp1, temp2) {
-    if (this.withinOptimalTemp(temp1.current.temp_f) && !this.withinOptimalTemp(temp2.current.temp_f)) {
-      this.score1++;
-    } else if (!this.withinOptimalTemp(temp1.current.temp_f) && this.withinOptimalTemp(temp2.current.temp_f)) {
-      this.score2++;
-    }
-  }
-
-  private withinOptimalTemp(temp): boolean {
-    return temp > this.optimalTempMin && temp < this.optimalTemMax;
+  public searchWeather(): any {
+    this.apiResource.get('current.json', this.cityForm.controls.cityOne.value)
+    .subscribe(data => this.apiResource.get('forecast.json', this.cityForm.controls.cityTwo.value)
+    .subscribe(data2 => {
+      this.cityObject.cityOne = data;
+      this.cityObject.cityTwo = data2;
+      this.weatherService.setCities(this.cityObject);
+      this.router.navigate(['/results']);
+    }));
   }
 }

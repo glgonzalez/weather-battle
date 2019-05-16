@@ -54,8 +54,6 @@ export class ResultsComponent implements OnInit {
         this.tie = true;
         this.cityScores = scores;
       }
-
-      console.log(this.winner, this.loser, this.tie, this.cityScores);
     });
   }
 }

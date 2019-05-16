@@ -15,8 +15,8 @@ export class SearchCitiesComponent {
     cityOne: new FormControl(),
     cityTwo: new FormControl()
   });
-  public cityOneResults: any[];
-  public cityTwoResults: any[];
+  public cityOneResults: string[];
+  public cityTwoResults: string[];
   public cityObject: any = {};
 
   // tslint:disable-next-line:use-life-cycle-interface
